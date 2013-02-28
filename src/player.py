@@ -25,6 +25,13 @@ class Player(Snake):
         super(Player, self).__init__(location, pixels, color, game)
         self.controlscheme = controlscheme
         self.directive = directive
+        self.speed = 3
+
+    def tick(self):
+        self.ticks = self.ticks + 1
+        if (self.ticks % self.speed == 0):
+            self.move()
+            self.ticks = 0
 
     def move(self):
         super(Player, self).move(self.directive)

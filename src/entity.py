@@ -1,3 +1,5 @@
+from pygame.color import Color
+
 class Entity(object):
     def __init__(self, location, sketch, game):
         self.pixels = []
@@ -8,11 +10,12 @@ class Entity(object):
 
         self.game = game
         self.score = 0
+        self.alive = True
 
     def getPixels(self):
         return self.pixels
 
-    def update(self):
+    def tick(self):
         pass
 
     def onKill(self):
@@ -26,6 +29,10 @@ class Point(Entity):
         super(Point, self).__init__(location, pixels, game)
 
     def onKill(self):
-        self.game.spawnNewPoint()
+        self.game.level.spawnNewPoint()
+
+class PowerUp(Entity):
+    def __init__(self, location, game):
+        super(PowerUp, self).__init__(location, [(0,0,Color(0,255,255,255))], game)
 
         

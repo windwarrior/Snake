@@ -6,114 +6,116 @@ from pygame.locals import *
 from pygame.color import Color
 
 from renderer import Renderer
-from field import Field
-from entity import Entity, Point
+from level import Level
+from entity import Entity, Point, PowerUp
 from snake import Snake
 from player import Direction, ControlScheme, Player, ControlWASD, ControlArrows
 
+from gamestate import GameState
+    
 class Game():
     def __init__(self):
-        self.running = True
-        self.alive = False
+        self.gameState = GameState.InitState
+
+        self.level = Level(24,18, self)
         self.renderer = Renderer(self)
-        self.field = Field(24,18)
-        self.players = []
-        self.entities = []
-        self.i = 0
+        self.ticks = 0
+
         self.initialize()
-        self.pauze = False
-        self.direction = (0,0)
 
     def initialize(self):
         pygame.init()
-        self.running = True
 
     def event(self, event):
         if event.type == pygame.QUIT:
-            self.running = False
-            self.alive = False
-            self.pauze = False
+            self.gameState = GameState.QuitState
         elif event.type == KEYDOWN:
             if event.key == K_p:
-                self.pauze = not self.pauze
+                self.gameState = GameState.PauzeState
             else:
-                for player in self.players:
+                for player in self.level.players:
                     if event.key in player.controlscheme.getAllKeys():
                         player.setDirective(event.key)
 
-    def stop(self):
-        self.alive = False
+    def setGameOver(self):
+        print "game over"
+        self.gameState = GameState.GameOverState
 
     def gameTick(self):
-        for player in self.players:
-            player.move()
+        for entity in self.level.entities + self.level.players:
+            entity.tick()
 
-    def killEntity(self, entity):
-        if entity in self.entities:
-            self.entities.remove(entity)
-            entity.onKill()
-        elif entity in self.players:
-            self.players.remove(entity)
-            entity.onKill()
-
-    def isOnOtherEntity(self, own_entity, location):
-        (x,y) = location
-
-        for et in (self.entities + self.players):
-            for (xC,yC,col) in et.getPixels():
-                if (x == xC and y == yC and not (et == own_entity)):
-                    return et
-
-        return None        
-
-    def spawnNewPoint(self):
-        found = False
-        (newX, newY) = (None,None)
-        pixelList = []
-
-        for ent in self.entities + self.players:   
-            for (x,y,col) in ent.getPixels():
-                pixelList.append((x,y))
-
-        while not found:
-            (newX, newY) = (random.randint(0, self.field.width-1), random.randint(0, self.field.height-1))
-
-            if not((newX, newY) in pixelList):
-                found = True
-
-        self.entities.append(Point((newX, newY), [(0,0,Color("Green"))], self))
-
-
-            
     def frameTick(self):
         self.renderer.tick(0)
 
-    def run_forever(self):
-        while(self.running):
-            self.entities = []
-            self.players = [
+    def startScreen(self):
+        pass
+
+    def gameRun(self):
+        gameticks = 0
+        frameticks = 0
+        while(self.gameState == GameState.RunState):
+            for event in pygame.event.get():
+                self.event(event)
+
+            if(self.ticks % 3 == 0):
+                gameticks += 1
+                self.gameTick()
+
+            self.frameTick()
+            frameticks += 1
+            self.ticks += 1
+
+            sleep(1.0/60.0)
+
+    def gameInit(self):
+        self.level.players = [
                 Player((4,0), [(0,0,Color("red")), (1,0,Color("red")), (2,0,Color("Yellow"))], Color("red"), self, (1,0), ControlArrows),
                 Player((4,4), [(0,0,Color("blue")), (1,0,Color("blue")), (2,0,Color("Yellow"))], Color("blue"), self, (1,0), ControlWASD)
                 ]
-            self.spawnNewPoint()
-            self.alive = True
-            while(self.alive):
-                for event in pygame.event.get():
-                    self.event(event)
 
-                self.gameTick()
+        self.level.entities = [
+            #PowerUp((10,10), self)
+        ]
+        self.level.spawnNewPoint()
+        self.level.spawnNewPoint()
+        self.gameState = GameState.RunState 
+      
+    def gamePauze(self):
+        while(self.gameState == GameState.PauzeState):
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.gameState = GameState.QuitState    
+                elif event.type == KEYDOWN:
+                    if event.key == K_p:
+                        self.gameState = GameState.RunState
+            sleep(0.1)
 
-                self.frameTick()
+    def gameOver(self):
+        while(self.gameState == GameState.GameOverState):
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.gameState = GameState.QuitState
+                elif event.type == KEYDOWN:
+                    if event.key == K_SPACE:
+                        self.gameState = GameState.InitState        
 
-                while(self.pauze):
-                    for event in pygame.event.get():
-                        if event.type == pygame.QUIT:
-                            self.running = False
-                            self.alive = False
-                            self.pauze = False
-                    sleep(0.3)
+    def run_forever(self):
+        running = True
+        while(running):
+            if   self.gameState == GameState.InitState:
+                self.gameInit()
+            elif self.gameState == GameState.RunState:
+                self.gameRun()
+            elif self.gameState == GameState.PauzeState:
+                self.gamePauze()
+            elif self.gameState == GameState.GameOverState:
+                self.gameOver()
+            elif self.gameState == GameState.QuitState:
+                running = False
 
-                sleep(0.3)
+        self.gameState = GameState.QuitState
+                
         pygame.quit()
 
 if __name__ == "__main__":
