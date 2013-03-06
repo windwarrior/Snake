@@ -44,3 +44,5 @@ class Player(Snake):
 
 ControlArrows = ControlScheme(K_UP, K_DOWN, K_RIGHT, K_LEFT)
 ControlWASD = ControlScheme(K_w, K_s, K_d, K_a)
+ControlJIKL = ControlScheme(K_i, K_k, K_l, K_j)
+ControlNum = ControlScheme(261, 262, 265, 259)

@@ -1,5 +1,8 @@
+import abc
+
 import pygame
 from pygame.locals import *
+from time import sleep
 
 from pygame.color import Color
 
@@ -8,7 +11,7 @@ from gamestate import GameState
 class Renderer():
     def __init__(self, game):
         self.game = game
-        self.disp = pygame.display.set_mode((640,480), pygame.HWSURFACE)
+        self.disp = pygame.display.set_mode((800,600), pygame.HWSURFACE)
         self.widthUnit = 0
         self.heightUnit = 0
 
@@ -86,4 +89,47 @@ class Renderer():
             self.drawGameOver()
             
         pygame.display.update()
+
+class AbstractRenderer(object):
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, game, disp):
+        self.game = game
+        self.disp = disp
+
+    @abc.abstractmethod
+    def render(self):
+        return
+
+class StartScreenRenderer(AbstractRenderer):
+    def __init__(self, game, disp):
+        super(StartScreenRenderer, self).__init__(game, disp)
+
+    def render(self):
+        width = self.disp.get_width()
+        height = self.disp.get_height()
+        spacing = 12
+
+        singleWidth = (width - 2 * spacing) / 2
+        singleHeight = (height - 2 * spacing) / 2
+
+        for i in [spacing, (width + spacing)/ 2]:
+            for j in [spacing, (height + spacing)/ 2]:
+                pygame.draw.rect(self.disp, Color(32,32,32,255), (i, j, (width / 2) - 1.5 * spacing, (height / 2) - 1.5 * spacing), 0)
+                pygame.draw.rect(self.disp, Color(64,64,64,255), (i, j, (width / 2) - 1.5 * spacing, (height / 2) - 1.5 * spacing), 3)
+                pygame.draw.rect(self.disp, Color(92,92,92,255), (i, j, (width / 2) - 1.5 * spacing, (height / 2) - 1.5 * spacing), 2)
+                #pygame.draw.rect(self.disp, Color(64,64,64,255), ((i * width / 2), (j * height / 2), (width / 2), (height / 2)), 3)
+                #pygame.draw.rect(self.disp, Color(92,92,92,255), ((i * width / 2), (j * height / 2), (width / 2), (height / 2)), 1)
+
+        pygame.display.update()
+
+def test_renderer():
+    disp = pygame.display.set_mode((800,600), pygame.HWSURFACE)
+    sr = StartScreenRenderer(None, disp)
+    sr.render()
+
+    sleep(5)
+
+test_renderer()
+        
         

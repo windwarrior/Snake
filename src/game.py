@@ -9,7 +9,7 @@ from renderer import Renderer
 from level import Level
 from entity import Entity, Point, PowerUp
 from snake import Snake
-from player import Direction, ControlScheme, Player, ControlWASD, ControlArrows
+from player import Direction, ControlScheme, Player, ControlWASD, ControlNum, ControlJIKL, ControlArrows
 
 from gamestate import GameState
     
@@ -17,7 +17,7 @@ class Game():
     def __init__(self):
         self.gameState = GameState.InitState
 
-        self.level = Level(24,18, self)
+        self.level = Level(34,28, self)
         self.renderer = Renderer(self)
         self.ticks = 0
 
@@ -33,6 +33,7 @@ class Game():
             if event.key == K_p:
                 self.gameState = GameState.PauzeState
             else:
+                #print event.key
                 for player in self.level.players:
                     if event.key in player.controlscheme.getAllKeys():
                         player.setDirective(event.key)
@@ -71,12 +72,16 @@ class Game():
     def gameInit(self):
         self.level.players = [
                 Player((4,0), [(0,0,Color("red")), (1,0,Color("red")), (2,0,Color("Yellow"))], Color("red"), self, (1,0), ControlArrows),
-                Player((4,4), [(0,0,Color("blue")), (1,0,Color("blue")), (2,0,Color("Yellow"))], Color("blue"), self, (1,0), ControlWASD)
+                Player((4,4), [(0,0,Color("blue")), (1,0,Color("blue")), (2,0,Color("Yellow"))], Color("blue"), self, (1,0), ControlWASD),
+                
+Player((4,8), [(0,0,Color("purple")), (1,0,Color("purple")), (2,0,Color("yellow"))], Color("purple"), self, (1,0), ControlJIKL),
+                Player((4,12), [(0,0,Color("brown")), (1,0,Color("brown")), (2,0,Color("yellow"))], Color("brown"), self, (1,0), ControlNum),
                 ]
 
         self.level.entities = [
             #PowerUp((10,10), self)
         ]
+        self.level.spawnNewPoint()
         self.level.spawnNewPoint()
         self.level.spawnNewPoint()
         self.gameState = GameState.RunState 
