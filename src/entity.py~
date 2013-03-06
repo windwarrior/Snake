@@ -34,3 +34,5 @@ class Point(Entity):
 class PowerUp(Entity):
     def __init__(self, location, game):
         super(PowerUp, self).__init__(location, [(0,0,Color(0,255,255,255))], game)
+
+        

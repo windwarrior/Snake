@@ -43,7 +43,6 @@ class Player(Snake):
         self.directive = self.controlscheme.keyActions[key]
 
     def onKill(self):
-        self.alive = False
         print "I'm dead {0} {1}".format(self.color, self.score)
 
 ControlArrows = ControlScheme(K_UP, K_DOWN, K_RIGHT, K_LEFT)

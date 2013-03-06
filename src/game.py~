@@ -47,7 +47,7 @@ class Game():
             self.currentState.update()
             self.currentState.render()
 
-            pygame.display.update()
+                    super(PauzeRenderer, self).render()
             sleep(1.0/60.0) # update 20 keer per seconde
                 
         pygame.quit()

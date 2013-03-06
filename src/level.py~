@@ -52,7 +52,7 @@ class Level():
     def bake_level(self):
         empty = [[None for i in range(0,self.width)] for i in range(0, self.height)]
 
-        for ent in self.entities + [player for player in self.players if player.alive]:
+        for ent in self.entities + self.players:
             for (x,y,col) in ent.getPixels():
                 empty[y][x] = col
 

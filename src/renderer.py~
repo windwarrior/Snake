@@ -111,8 +111,7 @@ class PauzeOverlayRenderer(GameRenderer):
 class GameOverOverlayRenderer(GameRenderer):
 
     def __init__(self, game):
-        super(GameOverOverlayRenderer, self).__init__(game)
-
+        super(GameOverOverlayRenderer, self).__init__(game)\
     def render(self):
         super(GameOverOverlayRenderer, self).render()
         self._drawTransparentOverlay()

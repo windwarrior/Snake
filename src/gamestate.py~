@@ -111,7 +111,7 @@ class PauzeState(BaseState):
 class GameOverState(BaseState):
     def __init__(self, game):
         super(GameOverState, self).__init__(game)
-        self.renderer = GameOverOverlayRenderer(game)
+        self.renderer = GameOverRenderer(game)
 
     def on_state_changed(self):
         pass
