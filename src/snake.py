@@ -6,8 +6,16 @@ class Snake(Entity):
         super(Snake, self).__init__(location, pixels, game)
         self.color = color
         self.prevDirection = (0,0)
-        self.ticks = 0     
-        
+        self.ticks = 0
+        self.speed = 7
+        self.directive = (0,0)
+
+    def tick(self):
+        print("tick!")
+        self.ticks = self.ticks + 1
+        if (self.ticks % self.speed == 0):
+            self.move(self.directive)
+            self.ticks = 0
 
     def move(self, direction):
         (xDiff, yDiff) = direction

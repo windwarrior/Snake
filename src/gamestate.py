@@ -34,14 +34,20 @@ class InitState(BaseState):
         super(InitState, self).__init__(game)
 
     def on_state_changed(self):
-        self.game.level.players = [
-            Player((4,0), [(0,0,Color("red")), (1,0,Color("red")), (2,0,Color("Yellow"))], Color("red"), self.game, (1,0), "Red", ControlArrows),
-            Player((4,4), [(0,0,Color("blue")), (1,0,Color("blue")), (2,0,Color("Yellow"))], Color("blue"), self.game, (1,0), "Blue", ControlWASD),
-            Player((4,8), [(0,0,Color("purple")), (1,0,Color("purple")), (2,0,Color("yellow"))], Color("purple"), self.game, (1,0), "Purple", ControlJIKL),
-            Player((4,12), [(0,0,Color("brown")), (1,0,Color("brown")), (2,0,Color("yellow"))], Color("brown"), self.game, (1,0), "Brown", ControlNum),
-        ]
+        colors = [Color("red"), Color("blue"), Color("purple"), Color("brown")]
+        names = ["Jack", "Harry", "Franz", "DeeDee"]
+        controls = [ControlArrows, ControlWASD, ControlJIKL, ControlNum]
+        for i in range(0,4):
 
-        self.game.level.entities = []
+            self.game.level.players.append(Player(colors[i], self.game, names[i], controls[i]))
+            
+        #self.game.level.players = [
+        #    Player((4,0), [(0,0,Color("red")), (1,0,Color("red")), (2,0,Color("Yellow"))], Color("red"), self.game, (1,0), "Red", ControlArrows),
+        #    Player((4,4), [(0,0,Color("blue")), (1,0,Color("blue")), (2,0,Color("Yellow"))], Color("blue"), self.game, (1,0), "Blue", ControlWASD),
+        #    Player((4,8), [(0,0,Color("purple")), (1,0,Color("purple")), (2,0,Color("yellow"))], Color("purple"), self.game, (1,0), "Purple", ControlJIKL),
+        #    Player((4,12), [(0,0,Color("brown")), (1,0,Color("brown")), (2,0,Color("yellow"))], Color("brown"), self.game, (1,0), "Brown", ControlNum),
+        #]
+
         
         for i in range(len(self.game.level.players)):
             self.game.level.spawnNewPoint()
@@ -81,7 +87,7 @@ class RunState(BaseState):
                             player.setDirective(event.key)
 
     def update(self):
-        for entity in self.game.level.entities + [player for player in self.game.level.players if player.alive]:
+        for entity in self.game.level.entities:
             entity.tick()
 
 

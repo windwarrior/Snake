@@ -9,7 +9,6 @@ class Entity(object):
             self.pixels.append((x + xLoc, y + yLoc, color))
 
         self.game = game
-        self.score = 0
         self.alive = True
 
     def getPixels(self):
@@ -21,8 +20,7 @@ class Entity(object):
     def onKill(self):
         pass
 
-    def score(self, points):
-        self.score = self.score + points
+
 
 class Point(Entity):
     def __init__(self, location, pixels, game):

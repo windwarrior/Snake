@@ -20,30 +20,29 @@ class ControlScheme(object):
     def getAllKeys(self):
         return self.keyActions.keys()
 
-class Player(Snake):
-    def __init__(self, location, pixels, color, game, directive, name, controlscheme):
-        super(Player, self).__init__(location, pixels, color, game)
+class Player():
+    def __init__(self, color, game, name, controlscheme):
+        self.game = game
         self.name = name
         self.controlscheme = controlscheme
-        self.directive = directive
-        self.speed = 7
-
         self.alive = True
+        (self.entity, directive) = self.game.level.spawnSnake(color, game)
 
-    def tick(self):
-        self.ticks = self.ticks + 1
-        if (self.ticks % self.speed == 0):
-            self.move()
-            self.ticks = 0
 
-    def move(self):
-        super(Player, self).move(self.directive)
+        self.score = 0
+
+        self.game.level.entities.append(self.entity)
+
+    def score(self, points):
+        self.score = self.score + points
 
     def setDirective(self, key):
-        self.directive = self.controlscheme.keyActions[key]
+        self.entity.directive = self.controlscheme.keyActions[key]
 
     def onKill(self):
         self.alive = False
+        self.game.level.entities.remove(self.entity)
+        self.entity = None
         print "I'm dead {0} {1}".format(self.color, self.score)
 
 ControlArrows = ControlScheme(K_UP, K_DOWN, K_RIGHT, K_LEFT)
