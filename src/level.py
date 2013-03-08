@@ -56,6 +56,9 @@ class Level():
 
         for ent in self.entities:
             for (x,y,col) in ent.getPixels():
+                if x >= self.width or y >= self.height:
+                    print "entity {0} is offending {1}".format(ent, ent.getPixels())
+                    continue
                 empty[y][x] = col
 
         return empty  
@@ -71,8 +74,8 @@ class Level():
         candidate = None
             
         while not found:
-            randX = random.randint(0, self.width - 1)
-            randY = random.randint(0, self.height - 1)
+            randX = random.randint(0, self.width - 3)
+            randY = random.randint(0, self.height - 3)
 
             found = True
             location = (randX, randY)

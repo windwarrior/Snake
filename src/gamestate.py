@@ -22,7 +22,7 @@ class BaseState(object):
         pass
 
     @abc.abstractmethod
-    def process_events(self, events):
+    def process_events(self, events):     
         pass
 
     @abc.abstractmethod
@@ -67,6 +67,7 @@ class RunState(BaseState):
     def __init__(self, game):
         super(RunState, self).__init__(game)
         self.renderer = GameRenderer(game)
+        self.ticks = 0
 
     def on_state_changed(self):
         pass
@@ -78,6 +79,8 @@ class RunState(BaseState):
         for event in events:
             if event.type == pygame.QUIT:
                 self.game.changeState(self.game.quitState) #somestate
+            elif event.type == pygame.VIDEORESIZE:
+                self.game.screen = pygame.display.set_mode(event.dict['size'], pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
             elif event.type == KEYDOWN:
                 if event.key == K_p:
                     self.game.changeState(self.game.pauzeState) #somestate
@@ -87,8 +90,13 @@ class RunState(BaseState):
                             player.setDirective(event.key)
 
     def update(self):
+        self.game.ticks += 1
+
+        if self.game.ticks > self.game.maxTicks:
+            self.game.changeState(self.game.gameOverState)
+
         for entity in self.game.level.entities:
-            entity.tick()
+            entity.tick(self.game.ticks)
 
 
 class PauzeState(BaseState):

@@ -14,7 +14,7 @@ class Entity(object):
     def getPixels(self):
         return self.pixels
 
-    def tick(self):
+    def tick(self, ticks):
         pass
 
     def onKill(self):

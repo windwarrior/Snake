@@ -23,9 +23,13 @@ class Game():
 
         self.currentState = None
 
+
+        self.ticks = 0
+        self.maxTicks = 18000
+
         self.running = True
         
-        self.disp = pygame.display.set_mode((800,600), pygame.HWSURFACE)
+        self.disp = pygame.display.set_mode((1280,1024), pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
 
         self.initialize()
         self.changeState(self.initState)

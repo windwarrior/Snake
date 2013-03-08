@@ -25,19 +25,25 @@ class Player():
         self.game = game
         self.name = name
         self.controlscheme = controlscheme
+        self.color = color
         self.alive = True
+        self.score = 0
         (self.entity, directive) = self.game.level.spawnSnake(color, game)
 
-
-        self.score = 0
-
-        self.game.level.entities.append(self.entity)
-
-    def score(self, points):
-        self.score = self.score + points
+        self.entity.player = self
+        self.entity.directive = directive
 
     def setDirective(self, key):
         self.entity.directive = self.controlscheme.keyActions[key]
+
+    def addScore(self, score):
+        print "Prev: {0}, New: {1}".format(self.score, self.score - score)
+        self.score = self.score + score
+
+    def respawn(self):
+        (self.entity, directive) = self.game.level.spawnSnake(self.color, self.game)
+        self.entity.player = self
+        self.entity.directive = directive
 
     def onKill(self):
         self.alive = False

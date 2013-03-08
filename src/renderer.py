@@ -62,7 +62,18 @@ class GameRenderer(AbstractRenderer):
 
         self.drawFields()
         self.drawScores()
-            
+        self.drawTicks()
+
+    def drawTicks(self):
+        font = pygame.font.SysFont("Dejavu Sans Extralight", 16) 
+        string = "Ticks done: {0}, Ticks left: {1}".format(self.game.ticks, self.game.maxTicks - self.game.ticks)
+
+        label = font.render(string, 1, Color(200,200,200,255))
+
+        xLoc = self.game.disp.get_width() - (label.get_width() + 10)
+        yLoc = (25 - label.get_height()) / 2
+
+        self.game.disp.blit(label, (xLoc, yLoc))
 
     def drawFields(self):
         lvl = self.game.level.bake_level()

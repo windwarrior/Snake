@@ -1,21 +1,26 @@
 from entity import Entity, Point
+
 from pygame.color import Color
+import math
 
 class Snake(Entity):
     def __init__(self, location, pixels, color, game):
         super(Snake, self).__init__(location, pixels, game)
         self.color = color
         self.prevDirection = (0,0)
-        self.ticks = 0
+        self.spawnTicks = 0
+
         self.speed = 7
+        self.player = None
         self.directive = (0,0)
 
-    def tick(self):
-        print("tick!")
-        self.ticks = self.ticks + 1
-        if (self.ticks % self.speed == 0):
+    def tick(self, ticks):
+        if self.spawnTicks < 50:
+            self.spawnTicks += 1
+        elif (ticks % self.speed == 0):
             self.move(self.directive)
-            self.ticks = 0
+
+
 
     def move(self, direction):
         (xDiff, yDiff) = direction
@@ -36,14 +41,34 @@ class Snake(Entity):
                 print (xDiff, yDiff), newPos
                 self.game.level.killEntity(self)
 
+                
+
+                if self.player:
+                    self.player.addScore(int(-1 * math.floor((self.player.score) / 2)))
+                    self.player.respawn()
+
             if col and isinstance(col,Point):
                 self.game.level.killEntity(col)
-                super(Snake, self).score(1)
+                if self.player:
+                    self.player.addScore(1)
             elif col and isinstance(col, Snake):
                 (xOtherHead, yOtherHead, colorOtherHead) = col.getPixels()[-1]
                 if (xOtherHead == newPos[0]) and (yOtherHead == newPos[1]):
                     self.game.level.killEntity(col)
+
+                    if col.player:
+                        col.player.addScore(int(-1 * math.floor((self.player.score) / 2)))
+                        col.player.respawn()
                 self.game.level.killEntity(self)
+
+
+
+                self.game.level.killEntity(self)
+
+                if self.player:
+                    self.player.addScore(int(-1 * math.floor((self.player.score) / 2)))
+                    self.player.respawn()
+
             else:
                 self.pixels.remove(self.pixels[0])
 
